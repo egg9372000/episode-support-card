@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>{{title}}</title>
+<style>
+:root { color-scheme: light; --blue: #241b65; --ink: #1c1743; --paper: #f7f6ff; --line: #dcd8f3; --accent: #e9ff85; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: clamp(12px, 4vw, 44px); background: #eae7f8; color: var(--ink); font: 1rem/1.55 "Inter", "Segoe UI", sans-serif; }
+main { margin: 0 auto; max-width: 850px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(min(300px, 45%), 1fr); background: var(--paper); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.episode { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(25px, 5vw, 48px); background: var(--blue); color: var(--paper); }
+.show { margin: 0 0 14px; font-weight: 680; color: #ddd6ff; overflow-wrap: anywhere; }
+h1 { margin: 0; max-width: 16ch; font: 500 clamp(2.2rem, 5vw, 4rem)/.98 "Instrument Serif", Georgia, serif; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.message { margin: 22px 0 0; max-width: 37ch; color: #eeebff; overflow-wrap: anywhere; }
+.signal { display: flex; align-items: center; gap: 5px; height: 45px; margin-block-end: 30px; }
+.signal span { width: 4px; height: calc(4px * var(--level)); border-radius: 2px; background: #b6a8ff; }
+.signal span:nth-child(5n) { background: var(--accent); }
+.support { min-width: 0; padding: clamp(19px, 4vw, 32px); }
+.support h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.65rem); letter-spacing: -.04em; }
+.amount { margin: 4px 0 12px; font-weight: 650; color: #554a86; }
+.demo { margin: 0 0 14px; font-size: .88rem; font-weight: 700; color: #574382; }
+.qr { display: block; image-rendering: pixelated; width: min(100%, var(--qr-size)); height: auto; margin: 0 auto 14px; border-radius: 4px; }
+.guidance { margin: 0 0 14px; font-size: .9rem; }
+.host { overflow-wrap: anywhere; }
+button { width: 100%; min-height: 44px; padding: 10px 14px; font: inherit; font-weight: 740; color: var(--ink); cursor: pointer; background: var(--accent); border: 1px solid #7c8d34; border-radius: 8px; }
+button:hover { background: #dff46c; }
+:focus-visible { outline: 3px solid #684de0; outline-offset: 3px; }
+details { margin-top: 10px; font-size: .88rem; }
+summary { cursor: pointer; width: fit-content; }
+textarea { width: 100%; min-height: 90px; margin-top: 7px; padding: 8px; font: .78rem/1.45 "IBM Plex Mono", Consolas, monospace; border: 1px solid #9486c5; border-radius: 5px; resize: vertical; }
+#notice { min-height: 1.4em; margin: 6px 0 0; color: #463771; font-size: .85rem; }
+@media (max-width: 650px) { main { grid-template-columns: minmax(0, 1fr); } .signal { margin-block-end: 16px; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="episode" aria-labelledby="episode-title">
+    <div class="signal" aria-hidden="true"><span style="--level:2"></span><span style="--level:4"></span><span style="--level:7"></span><span style="--level:5"></span><span style="--level:10"></span><span style="--level:6"></span><span style="--level:3"></span><span style="--level:7"></span><span style="--level:9"></span><span style="--level:5"></span><span style="--level:3"></span><span style="--level:1"></span></div>
+    <p class="show">{{show}}</p>
+    <h1 id="episode-title">{{episode}}</h1>
+    <p class="message">{{message}}</p>
+  </section>
+  <section class="support" aria-labelledby="support-title">
+    <h2 id="support-title">Support this episode</h2>
+    <p class="amount">{{amount}}</p>
+    {{demo}}
+    <img class="qr" src="{{qr}}" style="--qr-size:{{qrSize}}px" width="{{qrSize}}" height="{{qrSize}}" alt="QR code for the Cashu payment request">
+    <p class="guidance">Scan or paste into a Cashu wallet that supports payment requests. Check <strong class="host">{{recipient}}</strong> and any fees in your wallet before approving.</p>
+    <button id="copy" type="button" hidden>Copy Cashu request</button>
+    <details id="request-details">
+      <summary>Show payment request</summary>
+      <textarea id="request" aria-label="Cashu payment request" readonly spellcheck="false">{{request}}</textarea>
+    </details>
+    <p id="notice" role="status"></p>
+  </section>
+</main>
+<script>
+const copy = document.querySelector('#copy');
+const details = document.querySelector('#request-details');
+const request = document.querySelector('#request');
+const notice = document.querySelector('#notice');
+copy.hidden = false;
+copy.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(request.value);
+    notice.textContent = 'Cashu request copied.';
+  } catch {
+    details.open = true;
+    request.focus();
+    request.select();
+    notice.textContent = 'Copy the selected request and paste it into your wallet.';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "episode-support-card",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {"node": ">=22"},
+  "scripts": {
+    "demo": "node examples/demo.mjs",
+    "build": "node build.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@cashu/cashu-ts": "4.13.1",
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0"
+  }
+}
